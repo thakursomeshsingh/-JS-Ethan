@@ -203,9 +203,9 @@ const resetPasswordLoad = (req,res)=>{
 }
 
 const resetPassword = (req, res) => {
-    // Check if passwords match
+    
     if (req.body.password !== req.body.confirm_password) {
-        // Render error message if passwords don't match
+        
         return res.render('reset-password', {
             error_message: 'Passwords do not match',
             user: {
@@ -215,18 +215,17 @@ const resetPassword = (req, res) => {
         });
     }
 
-    // Hash password
+   
     bcrypt.hash(req.body.password, 10, (err, hash) => {
         if (err) {
             console.log(err);
             return res.status(500).send('Internal Server Error');
         }
 
-        // Perform reset
         db.query(`DELETE FROM password_reset WHERE email = '${req.body.email}'`);
         db.query(`UPDATE users SET password = '${hash}' WHERE id = '${req.body.user_id}'`);
 
-        // Render success message
+        
         res.render('message', { message: 'Password reset successfully!' });
     });
 };
